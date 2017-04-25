@@ -1,0 +1,2 @@
+# ezgi
+web tasarım

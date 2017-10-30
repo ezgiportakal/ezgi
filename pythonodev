@@ -1,0 +1,6 @@
+import bs4 as bs
+import urllib.request
+kaynak=urllib.request.urlopen('https://www.foreks.com/').read()
+sayfa=bs.BeautifulSoup(kaynak,'lxml')
+veriler=sayfa.find_all("div",{"id":"datatable_wrapper"})
+print(sayfa)

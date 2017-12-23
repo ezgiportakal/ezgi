@@ -1,0 +1,103 @@
+import random
+import sqlite3
+import matplotlib.pyplot as plt
+import numpy as np
+
+bolumler=["Acil Servis","Gogus Cerrahisi","Onkoloji","Noroloji","Psikiyatri","Radyoloji","Dahiliye",
+              "Kalp ve Damar Cerrahi","Radyoloji","Uroloji","Cocuk Cerrahisi","Dermatoloji","Fizik Teddavi",
+              "Beslenme ve Diyet","Genetik Tıp"]
+# veritabanina veri eklemek icin random atanmis veriler.
+rakamlar=[0,1,2,3,4,5,6,7,8,9]
+
+def Tcuret():
+
+
+    TC_List=[]
+
+    for z in range(0,100):
+        no=""
+        for i in range(0,11):
+
+            no+=str(random.choice(rakamlar))
+        TC_List.append(no)
+
+    return TC_List
+def cinsiyet():
+    cinsiyetList=[]
+    aa=["Kadin","Erkek"]
+
+    for i in range(0,100):
+
+        cinsiyetList.append(random.choice(aa))
+    return cinsiyetList
+
+
+def bolum():
+    bolumList=[]
+
+
+    for i in range(0,100):
+        bolumList.append(random.choice(bolumler))
+    return bolumList
+
+bb=bolum()
+cins=cinsiyet()
+tc=Tcuret()
+
+n_groups=13
+bayan=(12,26,61,96,32,54,40,69,74,50,10,42,84)
+erkek=(34,13,68,43,62,13,45,94,79,65,25,90,40)
+
+fig,ax=plt.subplots()
+index=np.arange(n_groups)
+bar_width=0.35
+opacity=0.8
+
+rects1=plt.bar(index,bayan,bar_width,
+               alpha=opacity,
+               color='r',
+               label='Bayan')
+
+rects2=plt.bar(index+bar_width,erkek,bar_width,
+               alpha=opacity,
+               color='b',
+               label='Erkek')
+
+plt.xlabel=('Bolumler')
+plt.ylabel=('Sayi')
+plt.title=('Bolumlere gore dagilim')
+plt.xticks(index+bar_width,('Acil Servis','Göğüs Cerrahisi','Onkoloji','Nöroloji','Psikiyatri','Radyoloji','Dahiliye','Kalp ve Damar Cerrahi',
+                            'Üroloji','Çocuk Cerrahi','Dermatoloji','Fizik Tedavi','Beslenme ve Diyet Genetik Tıp'))
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+#veritabani baglantisi ve veri kaydetme
+
+baglanti=sqlite3.connect('hastaKayit.db')
+baglanti.row_factory=sqlite3.Row
+
+isaretci=baglanti.cursor()
+# ilk çalistirmada asagidaki satiri ac
+#isaretci.execute('''CREATE TABLE hastalar(tc VARCHAR(25) PRIMARY KEY ,cinsiyet VARCHAR(6),bolum VARCHAR(25))''')
+# ilk çalistirmada asagidaki satiri ac 
+"""for z in range(0,100):
+    isaretci.execute('''INSERT INTO hastalar(tc,cinsiyet,bolum) VALUES ("%s","%s","%s")'''%(tc[z],cins[z],bb[z]))
+    baglanti.commit()"""
+
+#sorgu=isaretci.execute('SELECT tc,cinsiyet,bolum FROM hastalar')
+
+"""for i in sorgu.fetchall():
+    print(i['tc'],i['cinsiyet'],i['bolum'])"""
+
+sorgu=isaretci.execute('SELECT bolum,cinsiyet,count(cinsiyet) FROM hastalar GROUP BY bolum,cinsiyet')
+liste=[]
+for i in sorgu.fetchall():
+    print(i['bolum']," bölümüne ",i['count(cinsiyet)']," tane ",i['cinsiyet']," hasta gitmiştir.")
+
+
+
+
